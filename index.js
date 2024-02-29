@@ -3,9 +3,19 @@ const fs = require('fs');
 const app = express();
 
 app.use(express.json());
-PORT = 4000;
+
+app.use((req, res, next) => {
+    console.log('Hello from the middleware 1');
+    next();
+})
+
+app.use((req, res, next) => {
+    console.log("Hey hi there from 2nd middleware")
+    next();
+})
 
 // ------------- STARTING THE SERVER --------------
+PORT = 4000;
 app.listen(PORT, () => {
     console.log(`Server running at port ${PORT}...`);
 })
@@ -47,10 +57,18 @@ const tours = require('./dev-data/data/tours-simple.json');
 
 // Route Handlers
 // Getting all the tours data
+app.use((req, res, next) => {
+    req.requestTime = new Date().toISOString();
+    res.firstName = "Tejas";
+    lastName = "Angadi",            // THIS IS NOT PREFERED AS WE NEED TO USE REQ/RES
+        next();
+})
 const getAllTours = (req, res) => {
-
+    console.log(req.requestTime)
     res.status(200).json({
         status: "success",
+        requestedAt: req.requestTime,
+        createdBy: res.firstName + lastName,
         results: tours.length,
         data: {
             tours
