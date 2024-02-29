@@ -119,10 +119,28 @@ app.patch('/api/v1/tours/:id', (req, res) => {
 
     // As everything is valid we are good to update a tour based on the given id
     res.status(200).json({
-        status: 'success',
+        status: 'fail',
         data: {
             message: `Updating in tour ${id}`,
             tour: `<Updated tour here...>`
         }
+    })
+})
+
+// Deleting a tour
+app.delete('/api/v1/tours/:id', (req, res) => {
+    const id = req.params.id * 1;
+
+    if (id >= tours.length) {
+        return res.status(404).json({
+            status: 'fail',
+            message: 'ID not found'
+        })
+    }
+
+    res.status(204).json({
+        status: 'success',
+        message: `Deleted tour with id: ${id}`,
+        data: null
     })
 })
