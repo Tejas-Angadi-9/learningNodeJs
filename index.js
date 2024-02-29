@@ -45,7 +45,7 @@ const tours = require('./dev-data/data/tours-simple.json');
 
 // const tours = fs.readFile('./dev-data/data/tours-simple.json',)
 
-
+// Getting all the tours data
 app.get('/api/v1/tours', (req, res) => {
 
     res.status(200).json({
@@ -55,6 +55,24 @@ app.get('/api/v1/tours', (req, res) => {
             tours
         }
     })
+})
+
+// getting a single tour data based on id
+app.get('/api/v1/tours/:id?', (req, res) => {
+    const id = req.params.id * 1;
+
+    // if 'id' is greater than array size
+    if (id > tours.length) {
+        return res.status(404).json({
+            status: 'fail',
+            message: "Invalid id"
+        })
+    }
+
+    const tour = tours.find((el) => (
+        el.id === id
+    ))
+    res.send(tour)
 })
 
 app.post('/api/v1/tours', (req, res) => {
