@@ -103,3 +103,26 @@ app.post('/api/v1/tours', (req, res) => {
         .send(tours)
     console.log('Created the new entry')
 })
+
+// Updating a single tour
+app.patch('/api/v1/tours/:id', (req, res) => {
+    // Getting id
+    const id = req.params.id * 1;
+
+    // checking if the id is valid or not
+    if (id >= tours.length) {
+        return res.status(404).json({
+            status: 'Success',
+            message: 'ID not found'
+        })
+    }
+
+    // As everything is valid we are good to update a tour based on the given id
+    res.status(200).json({
+        status: 'success',
+        data: {
+            message: `Updating in tour ${id}`,
+            tour: `<Updated tour here...>`
+        }
+    })
+})
