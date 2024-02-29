@@ -1,6 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const app = express();
+const morgan = require('morgan')
 
 app.use(express.json());
 
@@ -53,6 +54,8 @@ app.get('/', (req, res) => {
 
 const tours = require('./dev-data/data/tours-simple.json');
 
+app.use(morgan('dev'))
+
 // const tours = fs.readFile('./dev-data/data/tours-simple.json',)
 
 // Route Handlers
@@ -76,6 +79,9 @@ const getAllTours = (req, res) => {
     })
 }
 
+const users = require('./dev-data/data/users.json')
+
+// Route handlers for TOURS
 // getting a single tour data based on id
 const getSingleTour = (req, res) => {
     const id = req.params.id * 1;
@@ -164,6 +170,15 @@ const deleteTour = (req, res) => {
     })
 }
 
+// Route handlers for USERS
+// Getting all the details of the users
+const getAllUsers = (req, res) => {
+    res.status(200).json({
+        status: 'success',
+        users
+    })
+}
+
 // Routes
 //! app.get('/api/v1/tours', getAllTours)
 //! app.get('/api/v1/tours/:id?', getSingleTour)
@@ -171,6 +186,7 @@ const deleteTour = (req, res) => {
 //! app.patch('/api/v1/tours/:id', updateTour)
 //! app.delete('/api/v1/tours/:id', deleteTour)
 
+// Routes for TOURS
 app
     .route('/api/v1/tours')
     .get(getAllTours)
@@ -181,3 +197,5 @@ app
     .patch(updateTour)
     .delete(deleteTour)
 
+// Routes for USERS
+app.route('/api/v1/users').get(getAllUsers)
