@@ -45,8 +45,9 @@ const tours = require('./dev-data/data/tours-simple.json');
 
 // const tours = fs.readFile('./dev-data/data/tours-simple.json',)
 
+// Route Handlers
 // Getting all the tours data
-app.get('/api/v1/tours', (req, res) => {
+const getAllTours = (req, res) => {
 
     res.status(200).json({
         status: "success",
@@ -55,10 +56,10 @@ app.get('/api/v1/tours', (req, res) => {
             tours
         }
     })
-})
+}
 
 // getting a single tour data based on id
-app.get('/api/v1/tours/:id?', (req, res) => {
+const getSingleTour = (req, res) => {
     const id = req.params.id * 1;
 
     // if 'id' is greater than array size
@@ -73,9 +74,9 @@ app.get('/api/v1/tours/:id?', (req, res) => {
         el.id === id
     ))
     res.send(tour)
-})
+}
 
-app.post('/api/v1/tours', (req, res) => {
+const postTour = (req, res) => {
     const { name, state, country } = req.body;
     if (!name || !state || !country) {
         return res
@@ -102,33 +103,33 @@ app.post('/api/v1/tours', (req, res) => {
         .status(201)
         .send(tours)
     console.log('Created the new entry')
-})
+}
 
 // Updating a single tour
-app.patch('/api/v1/tours/:id', (req, res) => {
+const updateTour = (req, res) => {
     // Getting id
     const id = req.params.id * 1;
 
     // checking if the id is valid or not
     if (id >= tours.length) {
         return res.status(404).json({
-            status: 'Success',
+            status: 'fail',
             message: 'ID not found'
         })
     }
 
     // As everything is valid we are good to update a tour based on the given id
     res.status(200).json({
-        status: 'fail',
+        status: 'success',
         data: {
             message: `Updating in tour ${id}`,
             tour: `<Updated tour here...>`
         }
     })
-})
+}
 
 // Deleting a tour
-app.delete('/api/v1/tours/:id', (req, res) => {
+const deleteTour = (req, res) => {
     const id = req.params.id * 1;
 
     if (id >= tours.length) {
@@ -143,4 +144,22 @@ app.delete('/api/v1/tours/:id', (req, res) => {
         message: `Deleted tour with id: ${id}`,
         data: null
     })
-})
+}
+
+// Routes
+//! app.get('/api/v1/tours', getAllTours)
+//! app.get('/api/v1/tours/:id?', getSingleTour)
+//! app.post('/api/v1/tours', postTour)
+//! app.patch('/api/v1/tours/:id', updateTour)
+//! app.delete('/api/v1/tours/:id', deleteTour)
+
+app
+    .route('/api/v1/tours')
+    .get(getAllTours)
+    .post(postTour)
+app
+    .route('/api/v1/tours/:id')
+    .get(getSingleTour)
+    .patch(updateTour)
+    .delete(deleteTour)
+
