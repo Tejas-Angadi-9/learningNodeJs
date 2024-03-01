@@ -79,7 +79,6 @@ const getAllTours = (req, res) => {
     })
 }
 
-const users = require('./dev-data/data/users.json')
 
 // Route handlers for TOURS
 // getting a single tour data based on id
@@ -170,12 +169,39 @@ const deleteTour = (req, res) => {
     })
 }
 
+// IMPORTING USERS DATA
+const users = require('./dev-data/data/users.json')
+
 // Route handlers for USERS
 // Getting all the details of the users
 const getAllUsers = (req, res) => {
     res.status(200).json({
         status: 'success',
         users
+    })
+}
+
+const createUser = (req, res) => {
+    res.status(500).json({
+        message: 'Still need to implement the logic to create an user'
+    })
+}
+
+const updateUser = (req, res) => {
+    res.status(500).json({
+        message: 'Still need to implement the logic to update an user'
+    })
+}
+
+function getUser(req, res) {
+    res.status(500).json({
+        message: 'Still need to implement the logic to get a single user'
+    })
+}
+
+function deleteUser(req, res) {
+    res.status(500).json({
+        message: 'Still need to implement the logic to delete an user'
     })
 }
 
@@ -186,16 +212,35 @@ const getAllUsers = (req, res) => {
 //! app.patch('/api/v1/tours/:id', updateTour)
 //! app.delete('/api/v1/tours/:id', deleteTour)
 
+// Creating and Mounting to a router
+const tourRouter = express.Router();
+// connecting tourRouter to a common link
+app.use('/api/v1/tours', tourRouter);
+
+
 // Routes for TOURS
-app
-    .route('/api/v1/tours')
+tourRouter
+    .route('/')
     .get(getAllTours)
     .post(postTour)
-app
-    .route('/api/v1/tours/:id')
+tourRouter
+    .route('/:id')
     .get(getSingleTour)
     .patch(updateTour)
     .delete(deleteTour)
 
+// Single Router for USERS
+const userRouter = express.Router();
+app.use('/api/v1/users', userRouter)
+
 // Routes for USERS
-app.route('/api/v1/users').get(getAllUsers)
+userRouter
+    .route('/')
+    .get(getAllUsers)
+    .post(createUser);
+
+userRouter
+    .route('/:id')
+    .get(getUser)
+    .patch(updateUser)
+    .delete(deleteUser)
