@@ -1,5 +1,5 @@
 const express = require('express');
-const fs = require('fs');
+// const fs = require('fs');
 const app = express();
 const morgan = require('morgan')
 
@@ -16,10 +16,10 @@ app.use((req, res, next) => {
 })
 
 // ------------- STARTING THE SERVER --------------
-PORT = 4000;
-app.listen(PORT, () => {
-    console.log(`Server running at port ${PORT}...`);
-})
+// PORT = 4000;
+// app.listen(PORT, () => {
+//     console.log(`Server running at port ${PORT}...`);
+// })
 
 // ----------------- ROUTES -----------------------
 // Get method
@@ -52,158 +52,20 @@ app.get('/', (req, res) => {
     res.send('This is the Natours home page');
 })
 
-const tours = require('./dev-data/data/tours-simple.json');
-
-app.use(morgan('dev'))
-
-// const tours = fs.readFile('./dev-data/data/tours-simple.json',)
-
-// Route Handlers
-// Getting all the tours data
 app.use((req, res, next) => {
     req.requestTime = new Date().toISOString();
     res.firstName = "Tejas";
     lastName = "Angadi",            // THIS IS NOT PREFERED AS WE NEED TO USE REQ/RES
         next();
 })
-const getAllTours = (req, res) => {
-    console.log(req.requestTime)
-    res.status(200).json({
-        status: "success",
-        requestedAt: req.requestTime,
-        createdBy: res.firstName + lastName,
-        results: tours.length,
-        data: {
-            tours
-        }
-    })
-}
 
+app.use(morgan('dev'))
 
-// Route handlers for TOURS
-// getting a single tour data based on id
-const getSingleTour = (req, res) => {
-    const id = req.params.id * 1;
-
-    // if 'id' is greater than array size
-    if (id > tours.length) {
-        return res.status(404).json({
-            status: 'fail',
-            message: "Invalid id"
-        })
-    }
-
-    const tour = tours.find((el) => (
-        el.id === id
-    ))
-    res.send(tour)
-}
-
-const postTour = (req, res) => {
-    const { name, state, country } = req.body;
-    if (!name || !state || !country) {
-        return res
-            .status(400)
-            .send('Fill all the fields')
-    }
-
-    const newId = tours[tours.length - 1].id + 1;
-    // const { name, state, country } = req.body;
-    const newTour = Object.assign({ id: newId }, req.body);
-    tours.push(newTour);
-
-    // writting the updated tours
-    // fs.writeFile('section_6_express_js/dev-data/data/tours-simple.json', JSON.stringify(tours), err => {
-    //     res.status(201).json({
-    //         status: "success",
-    //         data: {
-    //             tour: newTour
-    //         }
-    //     })
-    // })
-
-    res
-        .status(201)
-        .send(tours)
-    console.log('Created the new entry')
-}
-
-// Updating a single tour
-const updateTour = (req, res) => {
-    // Getting id
-    const id = req.params.id * 1;
-
-    // checking if the id is valid or not
-    if (id >= tours.length) {
-        return res.status(404).json({
-            status: 'fail',
-            message: 'ID not found'
-        })
-    }
-
-    // As everything is valid we are good to update a tour based on the given id
-    res.status(200).json({
-        status: 'success',
-        data: {
-            message: `Updating in tour ${id}`,
-            tour: `<Updated tour here...>`
-        }
-    })
-}
-
-// Deleting a tour
-const deleteTour = (req, res) => {
-    const id = req.params.id * 1;
-
-    if (id >= tours.length) {
-        return res.status(404).json({
-            status: 'fail',
-            message: 'ID not found'
-        })
-    }
-
-    res.status(204).json({
-        status: 'success',
-        message: `Deleted tour with id: ${id}`,
-        data: null
-    })
-}
-
-// IMPORTING USERS DATA
-const users = require('./dev-data/data/users.json')
+// const tours = fs.readFile('./dev-data/data/tours-simple.json',)
 
 // Route handlers for USERS
 // Getting all the details of the users
-const getAllUsers = (req, res) => {
-    res.status(200).json({
-        status: 'success',
-        users
-    })
-}
 
-const createUser = (req, res) => {
-    res.status(500).json({
-        message: 'Still need to implement the logic to create an user'
-    })
-}
-
-const updateUser = (req, res) => {
-    res.status(500).json({
-        message: 'Still need to implement the logic to update an user'
-    })
-}
-
-function getUser(req, res) {
-    res.status(500).json({
-        message: 'Still need to implement the logic to get a single user'
-    })
-}
-
-function deleteUser(req, res) {
-    res.status(500).json({
-        message: 'Still need to implement the logic to delete an user'
-    })
-}
 
 // Routes
 //! app.get('/api/v1/tours', getAllTours)
@@ -213,34 +75,14 @@ function deleteUser(req, res) {
 //! app.delete('/api/v1/tours/:id', deleteTour)
 
 // Creating and Mounting to a router
-const tourRouter = express.Router();
 // connecting tourRouter to a common link
+
+// import the router from routes folder
+const tourRouter = require('./routes/tourRoutes')
 app.use('/api/v1/tours', tourRouter);
 
 
-// Routes for TOURS
-tourRouter
-    .route('/')
-    .get(getAllTours)
-    .post(postTour)
-tourRouter
-    .route('/:id')
-    .get(getSingleTour)
-    .patch(updateTour)
-    .delete(deleteTour)
-
-// Single Router for USERS
-const userRouter = express.Router();
+const userRouter = require('./routes/userRoutes')
 app.use('/api/v1/users', userRouter)
 
-// Routes for USERS
-userRouter
-    .route('/')
-    .get(getAllUsers)
-    .post(createUser);
-
-userRouter
-    .route('/:id')
-    .get(getUser)
-    .patch(updateUser)
-    .delete(deleteUser)
+module.exports = app;
