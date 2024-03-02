@@ -15,6 +15,16 @@ exports.checkID = (req, res, next, val) => {
     next();
 }
 
+exports.checkEntry = (req, res, next) => {
+    const { name, state, country } = req.body;
+    if (!name || !state || !country) {
+        return res
+            .status(400)
+            .send('Fill all the fields')
+    }
+    next();
+}
+
 // -------------------------------------- ROUTE-HANDLERS ---------------------------------------------- //
 // Getting all the tours data
 exports.getAllTours = (req, res) => {
@@ -42,12 +52,7 @@ exports.getSingleTour = (req, res) => {
 }
 
 exports.postTour = (req, res) => {
-    const { name, state, country } = req.body;
-    if (!name || !state || !country) {
-        return res
-            .status(400)
-            .send('Fill all the fields')
-    }
+
 
     const newId = tours[tours.length - 1].id + 1;
     // const { name, state, country } = req.body;
