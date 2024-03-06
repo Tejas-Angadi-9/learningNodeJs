@@ -5,7 +5,7 @@ const router = express.Router();
 const tourController = require('./../controllers/tourController')
 
 // Param Middleware
-router.param('id', tourController.checkID)
+// router.param('id', tourController.checkID)
 
 
 // or instead of tourController.name we can use object destructering but the name should be same as it was exported
@@ -13,7 +13,8 @@ router.param('id', tourController.checkID)
 router
     .route('/')
     .get(tourController.getAllTours)
-    .post(tourController.checkEntry,tourController.postTour)
+    // .post(tourController.checkEntry,tourController.postTour)
+    .post(tourController.postTour)
 
 router
     .route('/:id')
