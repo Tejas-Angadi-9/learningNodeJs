@@ -2,6 +2,10 @@ const mongoose = require('mongoose')
 
 // Creating a new schema and then converting it to model
 const tourSchema = mongoose.Schema({
+    id: {
+        type: Number,
+        unique: true
+    },
     name: {
         type: String,
         required: [true, 'A tour must have a name'],
