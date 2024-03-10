@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+
+
 // ------------------------------- IMPORTING THE TOUR CONTROLLERS --------------------------------------------- //
 const tourController = require('./../controllers/tourController')
 

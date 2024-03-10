@@ -79,6 +79,7 @@ app.use(morgan('dev'))
 // connecting tourRouter to a common link
 
 // import the router from routes folder
+// Importing the tours-simple.json
 const tourRouter = require('./routes/tourRoutes')
 app.use('/api/v1/tours', tourRouter);
 

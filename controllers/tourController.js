@@ -33,6 +33,10 @@ const tourModel = require('../models/tourModel');
 exports.getAllTours = async (req, res) => {
     try {
         const tours = await tourModel.find();
+
+        if (tours.length === 0) {
+            return res.status(200).send('No tours available')
+        }
         console.log(req.requestTime)
         res.status(200).json({
             status: "success",
@@ -136,12 +140,13 @@ exports.updateTour = async (req, res) => {
 }
 
 // Deleting a tour
-exports.deleteTour = (req, res) => {
+exports.deleteTour = async (req, res) => {
     try {
+        const tour = await tourModel.findOneAndDelete({ _id: req.params.id })
         res.status(204).json({
             status: 'success',
             message: `Deleted tour with id: ${req.params.id * 1}`,
-            data: null
+            data: tour
         })
     }
     catch (err) {
