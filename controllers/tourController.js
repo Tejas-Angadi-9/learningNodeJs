@@ -3,6 +3,13 @@ const tours = require('../dev-data/data/tours-simple.json');
 // importing the tour model
 const tourModel = require('../models/tourModel');
 
+exports.aliasTopTours = (req, res, next) => {
+    req.query.limit = '5';
+    req.query.sort = '-ratingsAverage,price';
+    req.query.fields = 'name,price,raingsAverage,summary,difficulty';
+    next();
+}
+
 // PARAM MIDDLEWARE
 // exports.checkID = (req, res, next, val) => {
 //     console.log(`Tour id is: ${val}`)

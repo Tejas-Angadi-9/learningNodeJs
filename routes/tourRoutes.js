@@ -1,16 +1,16 @@
 const express = require('express');
 const router = express.Router();
 
-
-
 // ------------------------------- IMPORTING THE TOUR CONTROLLERS --------------------------------------------- //
 const tourController = require('./../controllers/tourController')
 
 // Param Middleware
 // router.param('id', tourController.checkID)
 
-
 // or instead of tourController.name we can use object destructering but the name should be same as it was exported
+router
+    .route('/top-5-cheap')
+    .get(tourController.aliasTopTours, tourController.getAllTours)
 
 router
     .route('/')
