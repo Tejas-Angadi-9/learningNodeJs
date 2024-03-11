@@ -35,13 +35,13 @@ exports.getAllTours = async (req, res) => {
         // const { duration, difficulty } = req.query;
         // console.log(duration + " " + difficulty);
 
-        // BUILD QUERY
-        // 1A) Filtering
+        // TODO BUILD QUERY
+        //! 1A) Filtering
         const queryObj = { ...req.query };
         const excludedFields = ['page', 'sort', 'limit', 'fields'];
         excludedFields.forEach(el => delete queryObj[el]);
 
-        // 1B) Advanced Filtering
+        //! 1B) Advanced Filtering
         let queryStr = JSON.stringify(queryObj);
         queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`)
         console.log(JSON.parse(queryStr))
@@ -51,6 +51,7 @@ exports.getAllTours = async (req, res) => {
         // if (req.query.sort) {
         //     query = query.sort(req.query.sort)
         // }
+        //! 2) SORTING
         if (req.query.sort) {
             const sortBy = req.query.sort.split(',').join(' ');
             console.log(sortBy)
@@ -58,10 +59,19 @@ exports.getAllTours = async (req, res) => {
         } else {
             query = query.sort('-createdAt')
         }
-        // EXECUTE QUERY
+
+        //! 3) Field limiting
+        if (req.query.fields) {
+            const fields = req.query.fields.split(',').join(' ');
+            query = query.select(fields);
+        } else {
+            // query = query.select('-__v -_id')
+            query = query.select('-__v')
+        }
+
+        //! EXECUTE QUERY
         const tours = await query;
 
-        // 2) SORTING
         /* if (duration && difficulty) {
         const filteredTour = await tourModel.find({ duration: duration, difficulty: difficulty })
 
