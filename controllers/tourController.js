@@ -35,42 +35,57 @@ exports.getAllTours = async (req, res) => {
         // const { duration, difficulty } = req.query;
         // console.log(duration + " " + difficulty);
 
+        // BUILD QUERY
+        // 1A) Filtering
         const queryObj = { ...req.query };
         const excludedFields = ['page', 'sort', 'limit', 'fields'];
         excludedFields.forEach(el => delete queryObj[el]);
 
+        // 1B) Advanced Filtering
         let queryStr = JSON.stringify(queryObj);
         queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`)
         console.log(JSON.parse(queryStr))
         console.log(req.query, queryObj)
         // const tours = await tourModel.find({ duration: duration, difficulty: difficulty });
-        const query = tourModel.find(JSON.parse(queryStr));
+        let query = tourModel.find(JSON.parse(queryStr));
+        // if (req.query.sort) {
+        //     query = query.sort(req.query.sort)
+        // }
+        if (req.query.sort) {
+            const sortBy = req.query.sort.split(',').join(' ');
+            console.log(sortBy)
+            query = query.sort(sortBy)
+        } else {
+            query = query.sort('-createdAt')
+        }
+        // EXECUTE QUERY
         const tours = await query;
 
-        // if (duration && difficulty) {
-        // const filteredTour = await tourModel.find({ duration: duration, difficulty: difficulty })
+        // 2) SORTING
+        /* if (duration && difficulty) {
+        const filteredTour = await tourModel.find({ duration: duration, difficulty: difficulty })
 
-        // Alternate way to do this
-        // const filteredTour = await tourModel.find().where('duration').equals(5).gt(5).where('difficulty').equals('easy');
+        Alternate way to do this
+        const filteredTour = await tourModel.find().where('duration').equals(5).gt(5).where('difficulty').equals('easy');
 
-        // if (filteredTour.length === 0) {
-        //     return res.status(404).json({
-        //         status: 'fail',
-        //         message: 'Filtered content not found'
-        //     })
-        // }
+        if (filteredTour.length === 0) {
+            return res.status(404).json({
+                status: 'fail',
+                message: 'Filtered content not found'
+            })
+        }
 
-        // return res.status(200).json({
-        //     status: "success",
-        //     // requestedAt: req.requestTime,
-        //     // createdBy: res.firstName + lastName,
-        //     results: filteredTour.length,
-        //     data: {
-        //         status: 'success',
-        //         filteredTour
-        //     }
-        // })
-        // }
+        return res.status(200).json({
+            status: "success",
+            // requestedAt: req.requestTime,
+            // createdBy: res.firstName + lastName,
+            results: filteredTour.length,
+            data: {
+                status: 'success',
+                filteredTour
+            }
+        })
+        } */
 
         if (tours.length === 0) {
             return res.status(200).send('No tours available')
